@@ -3,8 +3,6 @@
 ## ID : 1916154
 ## App:CALCULATOR-VERSION-1
 
-## NOTE:
-## 1)PLEASE REFER TO version1 branch for homework 2
 ## TERMINAL HISTORY
 touch .gitignore
   217  touch requirements.txt
