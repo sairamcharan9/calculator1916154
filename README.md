@@ -1,4 +1,4 @@
-# Calculator Project (Homework 6)
+# Calculator Project (Homework 5)
 
 ![Python Version](https://img.shields.io/badge/python-3.13%2B-blue)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
