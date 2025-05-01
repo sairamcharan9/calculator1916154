@@ -3,11 +3,18 @@
 init-hook='import sys; sys.path.append(".")'
 extension-pkg-whitelist=pydantic
 load-plugins=pylint_django
+ignore=venv
 
 [MESSAGES CONTROL]
-# Only show these errors
-# Disable the following checks (example list):
+# Disable the following checks
 disable=
+    C0114, # missing-module-docstring
+    C0115, # missing-class-docstring
+    C0116, # missing-function-docstring
+
+[FORMAT]
+max-line-length=79
+indent-string='    '
 
 [REPORTS]
 # Set the output format. Available formats: text, parseable, colorized, json, msvs (visual studio) and html
@@ -49,3 +56,4 @@ method-rgx=[a-z_][a-z0-9_]{2,50}$
 module-rgx=[a-z_][a-z0-9_]{1,30}$
 
 # Class names
+class-rgx=[A-Z_][a-zA-Z0-9]+$

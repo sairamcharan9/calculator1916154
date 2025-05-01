@@ -1,4 +1,60 @@
-*.sw*
-.coverage
-.pytest_cache
-*__pycache__
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+venv/
+.env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Logs
+logs/
+# Ignore all log files except history/app.log
+*.log
+!history/app.log
+
+# Testing
+.pytest_cache/
+.coverage*
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+# .env.example should be tracked for documentation
+
+# Coverage
+coverage.xml
+
+# Misc
+*.bak
+*.swp
+*.tmp
+
+# CI/CD
+.tox/
+
+# Pandas history
+history.csv
+
+# Project management files
+task.md
+taskmanager.md
