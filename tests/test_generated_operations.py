@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 """Property-based tests for Calculator operations using Faker-generated random data."""
 # Editor: ##@sb2853.njit.edu
 
@@ -13,3 +14,11 @@ def test_generated_operations(num1, num2, operation, expected_result):
     else:
         result = Calculator.compute(operation, float(num1), float(num2))
         assert pytest.approx(result, rel=1e-9) == float(expected_result)
+=======
+from app.calculator import Calculator
+
+
+def test_generated_operations(num1, num2, operation, expected_result):
+    result = Calculator.compute(operation, float(num1), float(num2))
+    assert result == expected_result
+>>>>>>> origin/version5
