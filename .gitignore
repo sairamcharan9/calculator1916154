@@ -10,6 +10,54 @@ __pycache__/
 
 # Virtual environment folder
 venv/
+.env/
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer 
+pip-delete-this-directory.txt
+
+# pytest
+.pytest_cache/
+
+# Coverage reports
+.coverage
+htmlcov/
+
+# VSCode settings
+.vscode/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environment folder
+venv/
 
 # Distribution / packaging
 .Python

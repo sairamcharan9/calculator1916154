@@ -25,3 +25,9 @@
 2025-04-30 21:42:38,526 [INFO] Loaded plugin command: multiply -> <class 'app.plugins.multiplication.MultiplyCommand'>
 2025-04-30 21:42:38,527 [INFO] Loaded plugin command: subtract -> <class 'app.plugins.subtraction.SubtractCommand'>
 2025-04-30 21:42:38,527 [INFO] Starting REPL mode... Type 'quit' to exit.
+2025-04-30 22:07:34,506 [INFO] Calculator starting in ENVIRONMENT: development, DEBUG=False
+2025-04-30 22:07:34,515 [INFO] Loaded plugin command: add -> <class 'app.plugins.addition.AddCommand'>
+2025-04-30 22:07:34,516 [INFO] Loaded plugin command: divide -> <class 'app.plugins.division.DivideCommand'>
+2025-04-30 22:07:34,517 [INFO] Loaded plugin command: exit -> <class 'app.plugins.exit.ExitCommand'>
+2025-04-30 22:07:34,517 [INFO] Loaded plugin command: multiply -> <class 'app.plugins.multiplication.MultiplyCommand'>
+2025-04-30 22:07:34,518 [INFO] Loaded plugin command: subtract -> <class 'app.plugins.subtraction.SubtractCommand'>

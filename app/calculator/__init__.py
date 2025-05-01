@@ -36,6 +36,22 @@ class Calculator:
     history: List[Calculation] = []
 
     @classmethod
+    def get_history(cls) -> str:
+        """
+        Return a string representation of the calculation history.
+        Returns:
+            str: All calculations in history, or 'No calculations recorded.' if empty.
+        """
+        if not cls.history:
+            return "No calculations recorded."
+        return "\n".join(str(calc) for calc in cls.history)
+
+    """
+    Provides a REPL and CLI interface for arithmetic operations.
+    """
+    history: List[Calculation] = []
+
+    @classmethod
     def run(cls):
         """
         Start the calculator REPL loop.
@@ -72,11 +88,12 @@ class Calculator:
             operation = operation_map.get(choice)
             if not operation:
                 print("Invalid choice. Please enter a number from 1 to 7.")
+                print("Testing coverage for final line.")
                 continue
 
             num1, num2 = cls.get_inputs()
             if num1 is None or num2 is None:
-                print("Invalid input. Please enter valid numbers.")
+                print("Invalid number. Please enter numeric values.")
                 continue
 
             try:
@@ -137,5 +154,7 @@ class Calculator:
     def clear_history(cls):
         """
         Clear the calculation history.
+        Prints a confirmation message.
         """
         cls.history.clear()
+        print("History has been cleared.")

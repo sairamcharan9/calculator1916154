@@ -3,14 +3,13 @@
 # Editor: ##@sb2853.njit.edu
 
 import pytest
-import pytest
 from app.calculator import Calculator
 from tests.test_utils import generate_test_data
 
-@pytest.mark.parametrize(
-    "num1,num2,operation,expected_result",
-    generate_test_data(10)
-)
+
+import pytest
+from app.calculator import Calculator
+
 def test_generated_operations_property(num1, num2, operation, expected_result):
     """Property-based test for Calculator operations using generated data."""
     if operation == "division" and float(num2) == 0:

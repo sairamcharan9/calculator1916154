@@ -31,20 +31,22 @@ A robust command-line calculator with:
 
 ## Quick Start
 
-To run the program:
+### Run the Calculator
 ```bash
 python main.py
 ```
 
-To run basic tests:
+### Run All Tests
 ```bash
 pytest tests
 ```
 
-To run Faker-generated random tests:
+### Property-Based Testing with Faker
+To run property-based tests with a custom number of random cases (using Faker):
 ```bash
 pytest tests --num_records=100
 ```
+This will dynamically generate 100 random test cases for the calculator using Faker.
 
 For full debug output:
 ```bash
@@ -115,10 +117,4 @@ TOTAL                                  292      1    99%
 
 **NOTE:** If you face any difficulties please contact me at <code> sb2853@njit.edu </code>
 
----
 
-Assignment 5 specific branches:
-- [commands branch](https://github.com/JaswanthKSnjit/homework5/tree/commands)
-- [plugins branch](https://github.com/JaswanthKSnjit/homework5/tree/plugins)
-
-Refer to the respective branches for their functionalities and code.
