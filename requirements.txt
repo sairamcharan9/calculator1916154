@@ -1,0 +1,26 @@
+pytest==8.2.0
+pytest-cov==6.0.0
+Faker==24.8.0
+python-dateutil==2.8.2
+six==1.16.0
+tzdata==2025.2
+
+# Testing & Quality
+coverage==7.6.12
+pylint==3.3.4
+pylint-pytest==1.1.8
+
+# Code analysis
+astroid==3.3.8
+dill==0.3.9
+exceptiongroup==1.2.0
+iniconfig==2.0.0
+isort==6.0.0
+mccabe==0.7.0
+platformdirs==4.3.6
+pluggy==1.5.0
+tomlkit==0.13.2
+typing_extensions==4.9.0
+
+# Packaging
+packaging==24.2
