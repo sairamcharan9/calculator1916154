@@ -60,11 +60,10 @@ def display_menu(commands=None):
     print("│ 12. min <nums...>         │ 15. mode <nums...>        │")
     print("│ 13. mean <nums...>        │ 16. stdev <nums...>       │")
     print("├───────────────────────────────────────────────────────┤")
-    print("│ Memory & History Commands                              │")
+    print("│ History Commands                                       │")
     print("├───────────────────────────────────────────────────────┤")
-    print("│ 17. undo                  │ 20. history               │")
-    print("│ 18. redo                  │ 21. clear_history         │")
-    print("│ 19. memory                │                           │")
+    print("│ 17. undo                  │ 19. history               │")
+    print("│ 18. redo                  │ 20. clear_history         │")
     print("├───────────────────────────────────────────────────────┤")
     print("│ Data Processing Commands                               │")
     print("├───────────────────────────────────────────────────────┤")
@@ -125,10 +124,8 @@ def handle_command(calculator, command_registry, command):
         elif command_num == 18:
             command_parts[0] = "redo"
         elif command_num == 19:
-            command_parts[0] = "memory"
-        elif command_num == 20:
             command_parts[0] = "history"
-        elif command_num == 21:
+        elif command_num == 20:
             command_parts[0] = "clear_history"
         elif command_num == 22:
             command_parts[0] = "list_csv"
@@ -215,7 +212,7 @@ def handle_command(calculator, command_registry, command):
                 except Exception as e:
                     logger.error(f"Failed to save history: {e}")
                 return result
-            elif cmd_name in ["undo", "redo", "memory", "history", "clear_history"]:
+            elif cmd_name in ["undo", "redo", "history", "clear_history"]:
                 result = cmd.execute()
                 try:
                     history_manager.add_entry(cmd_name, [], result)
@@ -296,66 +293,167 @@ def handle_cli_args():
     Handle command-line arguments for direct calculation.
     Format: main.py <num1> <num2> <operation>
     """
-    if len(sys.argv) != 4:
-        print("Usage: python main.py <num1> <num2> <operation>")
-        sys.exit(1)
+    # Create calculator instance
+    calculator = Calculator()
     
-    try:
-        num1 = float(sys.argv[1])
-        num2 = float(sys.argv[2])
-        operation = sys.argv[3].lower()
+    # Get command registry
+    command_registry = get_available_commands()
+    
+    # Parse arguments
+    if len(sys.argv) < 2:
+        print("Usage: python main.py [command] [args...]")
+        print("Example: python main.py add 5 3")
+        print("Run without arguments to start interactive mode.")
+        return
+    
+    # First argument is the command
+    command = sys.argv[1].lower()
+    
+    # Check if command exists
+    if command not in command_registry and command not in ['help', 'version']:
+        print(f"Unknown command: {command}")
+        print("Run 'python main.py help' for a list of commands.")
+        return
+    
+    # Special commands
+    if command == 'help':
+        display_help()
+        return
+    elif command == 'version':
+        print(f"Calculator version: 1.0.0")
+        print(f"Environment: {environment}")
+        return
+    
+    # Basic binary operations
+    if command in ['add', 'subtract', 'multiply', 'divide', 'power', 'logbase']:
+        if len(sys.argv) < 4:
+            print(f"Usage: python main.py {command} <num1> <num2>")
+            return
         
-        operation_map = {
-            'add': 'addition',
-            'addition': 'addition',
-            'subtract': 'subtract',
-            'multiply': 'multiply',
-            'divide': 'divide'
-        }
-        
-        op = operation_map.get(operation)
-        if not op:
-            print(f"Unknown operation: {operation}")
-            print("Supported operations: add, subtract, multiply, divide")
-            sys.exit(1)
-        
-        # Try to perform the calculation
         try:
-            if op == 'divide' and num2 == 0:
-                print("Cannot divide by zero.")
-                sys.exit(1)
-                
-            result = Calculator.compute(op, num1, num2)
-            print(f"The result of {num1} {operation} {num2} is equal to {result}")
-        except ZeroDivisionError:
-            print("Cannot divide by zero.")
+            num1 = float(sys.argv[2])
+            num2 = float(sys.argv[3])
+            result = execute_command(command, num1, num2)
+            print(f"Result: {result}")
+            
+            # Log to history
+            from src.calculator import Calculation
+            calc = Calculation(command, num1, num2, result)
+            history_manager.save_calculation(calc)
+            
+        except ValueError:
+            print("Error: Arguments must be numbers.")
         except Exception as e:
-            print(f"An error occurred: {e}")
-    except ValueError:
-        print("Invalid numeric input. Both num1 and num2 must be numbers.")
-        sys.exit(1)
+            print(f"Error: {e}")
+    
+    # Unary operations
+    elif command in ['sqrt', 'exp', 'log', 'abs']:
+        if len(sys.argv) < 3:
+            print(f"Usage: python main.py {command} <num>")
+            return
+        
+        try:
+            num = float(sys.argv[2])
+            result = execute_command(command, num)
+            print(f"Result: {result}")
+            
+            # Log to history
+            from src.calculator import Calculation
+            calc = Calculation(command, num, None, result)
+            history_manager.save_calculation(calc)
+            
+        except ValueError:
+            print("Error: Argument must be a number.")
+        except Exception as e:
+            print(f"Error: {e}")
+    
+    # Statistical operations
+    elif command in ['max', 'min', 'mean', 'median', 'mode', 'stdev']:
+        if len(sys.argv) < 3:
+            print(f"Usage: python main.py {command} <num1> <num2> ...")
+            return
+        
+        try:
+            numbers = [float(arg) for arg in sys.argv[2:]]
+            result = execute_command(command, *numbers)
+            print(f"Result: {result}")
+            
+            # Log to history
+            from src.calculator import Calculation
+            num1 = numbers[0] if numbers else None
+            num2 = numbers[1] if len(numbers) > 1 else None
+            calc = Calculation(command, num1, num2, result)
+            history_manager.save_calculation(calc)
+            
+        except ValueError:
+            print("Error: All arguments must be numbers.")
+        except Exception as e:
+            print(f"Error: {e}")
+    
+    # History operations
+    elif command in ['history', 'undo', 'redo', 'clear_history']:
+        try:
+            if command == 'history':
+                calculations = calculator.get_history()
+                if calculations:
+                    print("\n===== Calculation History =====")
+                    for i, calc in enumerate(calculations, 1):
+                        # Display formatted history entry
+                        if calc.num2 is not None:
+                            print(f"{i}. {calc.num1} {calc.operation} {calc.num2} = {calc.result}")
+                        else:
+                            print(f"{i}. {calc.operation}({calc.num1}) = {calc.result}")
+                    print("=============================")
+                else:
+                    print("\nNo calculation history.")
+            elif command == 'clear_history':
+                calculator.clear_history()
+                print("History cleared.")
+            elif command == 'undo':
+                result = calculator.undo()
+                if result is not None:
+                    print(f"Undo successful. Result: {result}")
+                else:
+                    print("Nothing to undo.")
+            elif command == 'redo':
+                result = calculator.redo()
+                if result is not None:
+                    print(f"Redo successful. Result: {result}")
+                else:
+                    print("Nothing to redo.")
+        except Exception as e:
+            print(f"Error: {e}")
+    
+    # Other plugin commands
+    else:
+        try:
+            args = sys.argv[2:]
+            result = execute_command(command, *args)
+            print(f"Result: {result}")
+        except Exception as e:
+            print(f"Error: {e}")
 
 def display_help():
     """Display help information."""
-    print("\n" + "╔" + "═" * 58 + "╗")
-    print(f"║{'CALCULATOR HELP':^58}║")
-    print("╠" + "═" * 58 + "╣")
-    print("║  This calculator provides the following functionality:        ║")
-    print("║                                                               ║")
-    print("║  • Basic arithmetic: add, subtract, multiply, divide          ║")
-    print("║  • Advanced operations: power, sqrt, factorial                ║")
-    print("║  • Calculation history with undo/redo                         ║")
-    print("║                                                               ║")
-    print("║  To use the calculator:                                       ║")
-    print("║  1. Enter the number corresponding to the desired command     ║")
-    print("║  2. Follow the prompts to input numbers                       ║")
-    print("║  3. View the result                                           ║")
-    print("║                                                               ║")
-    print("║  Examples:                                                    ║")
-    print("║    - Enter '1' to add two numbers                             ║")
-    print("║    - Enter 'menu' to see available commands                   ║")
-    print("║    - Enter 'quit' to exit                                     ║")
-    print("╚" + "═" * 58 + "╝")
+    print("\n" + "=" * 60)
+    print(f"{'CALCULATOR HELP':^60}")
+    print("=" * 60)
+    print("\nAvailable Commands:")
+    print("  Basic Operations: add, subtract, multiply, divide, power")
+    print("  Scientific Operations: sqrt, exp, log, logbase, abs")
+    print("  Statistical Operations: max, min, mean, median, mode, stdev")
+    print("  History Operations: undo, redo, history, clear_history")
+    print("  Data Operations: explore, analyze, stats, visualize")
+    print("  Other Commands: help, menu, exit")
+    print("\nHow to Use:")
+    print("  1. Enter a command number or name")
+    print("  2. Follow the prompts to enter numbers or parameters")
+    print("  3. View the result")
+    print("\nTips:")
+    print("  - Use 'history' to view past calculations")
+    print("  - Use 'undo/redo' to navigate calculation history")
+    print("  - For data operations, use CSV files with headers")
+    print("=" * 60)
 
 def start_repl():
     """Start the Read-Eval-Print Loop interface."""

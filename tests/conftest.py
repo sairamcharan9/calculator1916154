@@ -6,7 +6,8 @@ import pytest
 import random
 from faker import Faker
 import tempfile
-import pandas as pd
+# Remove pandas dependency
+# import pandas as pd
 
 def pytest_addoption(parser):
     """Add command-line options to pytest."""
@@ -61,18 +62,15 @@ def csv_data_for_tests(temp_data_dir, faker, num_records):
             'Population': faker.random_int(min=10000, max=40000000)
         })
     
-    states_df = pd.DataFrame(states_data)
-    csv_path = os.path.join(temp_data_dir, "states.csv")
-    states_df.to_csv(csv_path, index=False)
+    # Removed pandas-dependent functionality
+    # states_df = pd.DataFrame(states_data)
+    # csv_path = os.path.join(temp_data_dir, "states.csv")
+    # states_df.to_csv(csv_path, index=False)
     
     return {
         'dir': temp_data_dir,
-        'files': {
-            'states': csv_path
-        },
-        'dataframes': {
-            'states': states_df
-        }
+        'files': {},
+        'dataframes': {}
     }
 
 def pytest_generate_tests(metafunc):

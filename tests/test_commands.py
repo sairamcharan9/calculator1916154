@@ -18,8 +18,6 @@ from src.plugins.scientific import (
 from src.plugins.data import (
     MaxCommand, MinCommand, MeanCommand, MedianCommand, ModeCommand, StandardDeviationCommand
 )
-# Import memory commands from memory plugin
-from src.plugins.memory import MemoryCommand
 from src.commands.power_command import PowerCommand
 from src.calculator import Calculator, Calculation
 
@@ -302,16 +300,18 @@ class TestHistoryCommands:
     def setup_method(self):
         """Set up test fixtures."""
         Calculator.clear_history()
+        # Also clear history manager
+        from src.history.data_manager import history_manager
+        history_manager.clear_history()
     
-    @patch('src.plugins.memory.__init__.Calculator.get_history')
+    @patch('src.history.data_manager.history_manager.get_history')
     def test_history_command(self, mock_get_history):
         """Test HistoryCommand."""
         # Create calculations for testing
         calc1 = Calculation("add", 2, 3, 5)
         calc2 = Calculation("multiply", 5, 4, 20)
         
-        # In the actual implementation, HistoryCommand.execute() treats the return value 
-        # from Calculator.get_history() as a list of calculations, not a string
+        # Mock get_history to return our test calculations
         mock_get_history.return_value = [calc1, calc2]
         
         cmd = HistoryCommand()
@@ -322,11 +322,12 @@ class TestHistoryCommands:
         assert result == expected_result
         assert cmd.name == "history"
     
-    @patch('src.calculator.Calculator.clear_history')
+    @patch('src.history.data_manager.history_manager.clear_history')
     def test_clear_history_command(self, mock_clear_history):
         """Test ClearHistoryCommand."""
         # Add some calculations to history
-        Calculator.add_to_history(Calculation("add", 2, 3, 5))
+        from src.history.data_manager import history_manager
+        history_manager.save_calculation(Calculation("add", 2, 3, 5))
         
         # Set up the mock
         mock_clear_history.return_value = None
@@ -408,32 +409,6 @@ class TestHistoryCommands:
         
         # Check the exact output message
         assert result == "Nothing to redo."
-    
-    def test_memory_command(self):
-        """Test MemoryCommand."""
-        cmd = MemoryCommand()
-        
-        # Test storing a value
-        store_result = cmd.execute("store", "x", 10)
-        assert "stored" in store_result.lower()
-        
-        # Test recalling the value
-        recall_result = cmd.execute("recall", "x")
-        assert recall_result == 10
-        
-        # Test listing memory contents
-        list_result = cmd.execute("list")
-        assert "x: 10" in list_result
-        
-        # Test clearing memory
-        clear_result = cmd.execute("clear_memory")
-        assert "cleared" in clear_result.lower()
-        
-        # Verify memory is empty
-        list_result = cmd.execute("list")
-        assert "empty" in list_result.lower()
-        
-        assert cmd.name == "memory"
 
 class TestPowerCommand:
     """Tests for PowerCommand."""

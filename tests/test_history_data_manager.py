@@ -1,10 +1,13 @@
+"""
+Unit tests for the history data manager module.
+"""
 import os
 import tempfile
-import shutil
+# import pandas as pd
 import pytest
-import pandas as pd
 from src.calculator import Calculation
 from src.history.data_manager import HistoryDataManager
+import shutil
 
 @pytest.fixture
 def temp_history_file():
@@ -42,9 +45,19 @@ def test_save_and_load_csv(data_manager, temp_history_file):
     calc = Calculation("mul", 2, 3, 6)
     data_manager.save_calculation(calc)
     # Now load from file
-    loaded_df = pd.read_csv(temp_history_file)
-    assert not loaded_df.empty
-    assert loaded_df.iloc[0]["result"] == 6
+    with open(temp_history_file, 'r') as file:
+        lines = file.readlines()
+    
+    assert len(lines) > 0
+    # Debug: Print the content of the CSV file
+    print(f"CSV header: {lines[0].strip()}")
+    print(f"CSV data: {lines[1].strip()}")
+    csv_values = lines[1].strip().split(',')
+    print(f"CSV values: {csv_values}")
+    print(f"Result value at index 4: {csv_values[4]}")  # Change from index 3 to 4
+    
+    # The CSV format includes timestamp first, so result should be at index 4
+    assert csv_values[4] == '6'
 
 def test_load_history_missing_file(data_manager):
     # Should not raise error, just log

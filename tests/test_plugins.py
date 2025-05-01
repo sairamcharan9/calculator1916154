@@ -199,7 +199,7 @@ class TestPluginsIntegration:
                     not d.startswith('__')]
         
         # Should have at least the standard plugin types
-        expected_dirs = {'arithmetic', 'scientific', 'data', 'memory', 'sample'}
+        expected_dirs = {'arithmetic', 'scientific', 'data', 'sample'}
         for dir_name in expected_dirs:
             assert dir_name in subdirs, f"Missing expected plugin directory: {dir_name}"
             
@@ -253,21 +253,6 @@ class TestPluginsIntegration:
         assert "filter" in COMMAND_REGISTRY
         assert "sort" in COMMAND_REGISTRY
         assert "statistics" in COMMAND_REGISTRY
-    
-    def test_memory_plugin(self):
-        """Test the memory plugin registration."""
-        # First clear any existing registrations
-        PLUGIN_REGISTRY.clear()
-        COMMAND_REGISTRY.clear()
-        
-        # Re-discover plugins
-        discover_plugins()
-        
-        # Check if memory commands are registered
-        assert "store" in COMMAND_REGISTRY
-        assert "recall" in COMMAND_REGISTRY
-        assert "clear_memory" in COMMAND_REGISTRY
-        assert "list_memory" in COMMAND_REGISTRY
     
     def test_sample_plugin(self):
         """Test the sample plugin registration."""

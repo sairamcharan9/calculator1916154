@@ -4,7 +4,7 @@ Implements the Calculator and Calculation classes with REPL and history.
 """
 
 from src.operations.operations import Operations
-from typing import List, Optional, Dict, Any
+from typing import List, Dict, Any
 import math
 import logging
 
@@ -44,29 +44,11 @@ class Calculation:
         )
 
 
-class Memory:
-    """
-    Stores calculator memory slots for advanced operations.
-    """
-    def __init__(self):
-        self.slots: Dict[str, float] = {}
-
-    def store(self, key: str, value: float):
-        self.slots[key] = value
-
-    def recall(self, key: str) -> float:
-        return self.slots.get(key, 0.0)
-
-    def clear(self):
-        self.slots.clear()
-
-
 class Calculator:
     """
-    Advanced calculator supporting arithmetic, scientific, memory, and undo/redo.
+    Advanced calculator supporting arithmetic operations and undo/redo functionality.
     """
     history: List[Calculation] = []
-    memory = Memory()
     undo_stack: List[Calculation] = []
 
     @classmethod
@@ -184,7 +166,7 @@ class Calculator:
     @classmethod
     def compute(cls, operation: str, num1: float, num2: float = None) -> float:
         """
-        Compute the result of an operation. Supports arithmetic and scientific ops.
+        Compute the result of an operation. Supports arithmetic operations.
         
         Args:
             operation (str): Operation name
@@ -217,11 +199,6 @@ class Calculator:
                 return math.cos(num1)
             elif operation == 'tan':
                 return math.tan(num1)
-            elif operation == 'store':
-                cls.memory.store(str(num1), num2)
-                return num2
-            elif operation == 'recall':
-                return cls.memory.recall(str(num1))
             else:
                 raise ValueError(f"Unsupported operation: {operation}")
         except Exception as e:
@@ -247,13 +224,11 @@ class Calculator:
         print("11) sin    (sine)")
         print("12) cos    (cosine)")
         print("13) tan    (tangent)")
-        print("14) store  (store a value in memory)")
-        print("15) recall (recall a value from memory)")
-        print("16) quit    (exit the calculator)")
+        print("14) quit    (exit the calculator)")
 
         while True:
-            choice = input("Enter your choice (1-16): ").strip()
-            if choice == "16" or choice.lower() == "quit":
+            choice = input("Enter your choice (1-14): ").strip()
+            if choice == "14" or choice.lower() == "quit":
                 print("Exiting calculator. Goodbye!")
                 break
 
@@ -280,32 +255,19 @@ class Calculator:
                 "10": "log",
                 "11": "sin",
                 "12": "cos",
-                "13": "tan",
-                "14": "store",
-                "15": "recall"
+                "13": "tan"
             }
             operation = operation_map.get(choice)
             if not operation:
-                print("Invalid choice. Please enter a number from 1 to 16.")
+                print("Invalid choice. Please enter a number from 1 to 14.")
                 continue
 
-            if operation in ["sqrt", "log", "sin", "cos", "tan", "recall"]:
+            if operation in ["sqrt", "log", "sin", "cos", "tan"]:
                 num1 = float(input("Enter the first number: ").strip())
                 try:
                     result = cls.compute(operation, num1)
                     print(f"The result is: {result}")
-                    cls.add_to_history(Calculation(operation, num1, None, result))
-                except ZeroDivisionError:
-                    print("Cannot divide by zero.")
-                except ValueError as e:
-                    print(e)
-            elif operation == "store":
-                num1 = float(input("Enter the memory slot: ").strip())
-                num2 = float(input("Enter the value to store: ").strip())
-                try:
-                    result = cls.compute(operation, num1, num2)
-                    print(f"Stored {result} in memory slot {num1}.")
-                    cls.add_to_history(Calculation(operation, num1, num2, result))
+                    cls.add_to_history(Calculation(operation, num1, 0, result))
                 except ZeroDivisionError:
                     print("Cannot divide by zero.")
                 except ValueError as e:

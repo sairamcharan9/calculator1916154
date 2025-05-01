@@ -19,6 +19,40 @@ Welcome to the Advanced Python Calculator, a professional, extensible, and fully
 - **Data Processing:** Process CSV files using the Pandas-based DataFacade for advanced data manipulation.
 - **Tested & CI-Ready:** Achieves 90%+ coverage and passes all tests in GitHub Actions.
 
+## Test Coverage Report
+
+The project has achieved over 90% test coverage as required:
+
+```
+Name                                  Stmts   Miss  Cover
+---------------------------------------------------------
+src\__init__.py                           0      0   100%
+src\calculator\__init__.py              167      6    96%
+src\commands\__init__.py                  0      0   100%
+src\commands\arithmetic_commands.py      93      0   100%
+src\commands\command_base.py             10      2    80%
+src\commands\power_command.py            16      3    81%
+src\history\__init__.py                   0      0   100%
+src\history\data_manager.py             107     11    90%
+src\history\logger.py                    68      4    94%
+src\operations\__init__.py                0      0   100%
+src\operations\operations.py            109      0   100%
+src\plugins\__init__.py                  62      7    89%
+src\plugins\arithmetic\__init__.py       11      0   100%
+src\plugins\data\__init__.py            295     57    81%
+src\plugins\sample\__init__.py           19      0   100%
+src\plugins\scientific\__init__.py       90      0   100%
+---------------------------------------------------------
+TOTAL                                  1047     90    91%
+```
+
+Key coverage accomplishments:
+- Core calculator functionality at 96% coverage
+- Arithmetic commands at 100% coverage
+- Operations module at 100% coverage
+- History data manager at 90% coverage
+- Overall project coverage exceeds target at 91%
+
 ## Command-Line Interface (CLI) Usage
 
 The calculator is primarily used via a modern, interactive CLI (REPL). To start the CLI, run:

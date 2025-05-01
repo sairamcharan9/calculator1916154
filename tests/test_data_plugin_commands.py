@@ -185,13 +185,19 @@ class TestDataCommandsWithRandomData:
         # Clean up temporary directory
         self.temp_dir.cleanup()
     
-    def test_with_random_data(self, faker, num_records, csv_data_for_tests):
+    def test_with_random_data(self, faker, num_records):
         """Test data commands with random data."""
-        # Get the CSV data from fixture
-        csv_path = csv_data_for_tests['files']['states']
+        # Create our own test data
+        states_data = []
+        for _ in range(num_records):
+            states_data.append({
+                'Abbreviation': faker.state_abbr(),
+                'State': faker.state(),
+                'Population': faker.random_int(min=10000, max=40000000)
+            })
         
-        # Copy the CSV file to our test directory
-        test_df = pd.read_csv(csv_path)
+        # Create DataFrame and save to CSV
+        test_df = pd.DataFrame(states_data)
         test_path = os.path.join(self.temp_dir.name, "random_test.csv")
         test_df.to_csv(test_path, index=False)
         

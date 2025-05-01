@@ -6,7 +6,8 @@ Provides basic arithmetic operations for the calculator.
 import logging
 from src.commands.command_base import Command
 from src.commands.arithmetic_commands import (
-    AddCommand, SubtractCommand, MultiplyCommand, DivideCommand
+    AddCommand, SubtractCommand, MultiplyCommand, DivideCommand,
+    HistoryCommand, ClearHistoryCommand, UndoCommand, RedoCommand
 )
 
 # Get logger
@@ -27,7 +28,11 @@ def register_commands(command_registry):
         AddCommand(),
         SubtractCommand(),
         MultiplyCommand(),
-        DivideCommand()
+        DivideCommand(),
+        HistoryCommand(),
+        ClearHistoryCommand(),
+        UndoCommand(),
+        RedoCommand()
     ]
     
     # Register each command

@@ -5,6 +5,7 @@ Implementation of arithmetic command classes using the command pattern.
 from src.commands.command_base import Command
 from src.calculator import Calculator, Calculation
 import logging
+from src.history.data_manager import history_manager
 
 class AddCommand(Command):
     """Command to execute addition operation."""
@@ -25,7 +26,11 @@ class AddCommand(Command):
             float: Result of addition
         """
         result = Calculator.compute("add", num1, num2)
-        Calculator.add_to_history(Calculation("add", num1, num2, result))
+        calc = Calculation("add", num1, num2, result)
+        # Add to Calculator's history
+        Calculator.add_to_history(calc)
+        # Also add to history manager
+        history_manager.save_calculation(calc)
         logging.info(f"Addition executed: {num1} + {num2} = {result}")
         return result
 
@@ -49,7 +54,11 @@ class SubtractCommand(Command):
             float: Result of subtraction
         """
         result = Calculator.compute("subtract", num1, num2)
-        Calculator.add_to_history(Calculation("subtract", num1, num2, result))
+        calc = Calculation("subtract", num1, num2, result)
+        # Add to Calculator's history
+        Calculator.add_to_history(calc)
+        # Also add to history manager
+        history_manager.save_calculation(calc)
         logging.info(f"Subtraction executed: {num1} - {num2} = {result}")
         return result
 
@@ -73,7 +82,11 @@ class MultiplyCommand(Command):
             float: Result of multiplication
         """
         result = Calculator.compute("multiply", num1, num2)
-        Calculator.add_to_history(Calculation("multiply", num1, num2, result))
+        calc = Calculation("multiply", num1, num2, result)
+        # Add to Calculator's history
+        Calculator.add_to_history(calc)
+        # Also add to history manager
+        history_manager.save_calculation(calc)
         logging.info(f"Multiplication executed: {num1} * {num2} = {result}")
         return result
 
@@ -104,7 +117,11 @@ class DivideCommand(Command):
             raise ZeroDivisionError("Cannot divide by zero.")
             
         result = Calculator.compute("divide", num1, num2)
-        Calculator.add_to_history(Calculation("divide", num1, num2, result))
+        calc = Calculation("divide", num1, num2, result)
+        # Add to Calculator's history
+        Calculator.add_to_history(calc)
+        # Also add to history manager
+        history_manager.save_calculation(calc)
         logging.info(f"Division executed: {num1} / {num2} = {result}")
         return result
 
@@ -123,7 +140,7 @@ class HistoryCommand(Command):
         Returns:
             str: String representation of calculation history
         """
-        history = Calculator.get_history()
+        history = history_manager.get_history()
         logging.info("History command executed")
         if not history:
             return "Calculation History:\n(empty)"
@@ -141,7 +158,7 @@ class ClearHistoryCommand(Command):
         """
         Execute clear history command.
         """
-        Calculator.clear_history()
+        history_manager.clear_history()
         logging.info("History cleared")
         return "History has been cleared."
 
@@ -162,6 +179,8 @@ class UndoCommand(Command):
         """
         calc = Calculator.undo()
         if calc:
+            # Remove from history_manager too
+            history_manager.remove_last_calculation()
             logging.info(f"Undid calculation: {calc}")
             return f"Undone: {calc}"
         logging.info("Nothing to undo")
@@ -184,6 +203,8 @@ class RedoCommand(Command):
         """
         calc = Calculator.redo()
         if calc:
+            # Add to history_manager too
+            history_manager.add_calculation(calc)
             logging.info(f"Redid calculation: {calc}")
             return f"Redone: {calc}"
         logging.info("Nothing to redo")

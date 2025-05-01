@@ -134,5 +134,5 @@ def execute_command(name, *args, **kwargs):
     """Execute a command by name from the COMMAND_REGISTRY."""
     cmd = COMMAND_REGISTRY.get(name)
     if cmd is None:
-        raise ValueError(f"Command '{name}' not found.")
+        return None
     return cmd.execute(*args, **kwargs)

@@ -29,6 +29,10 @@ class HistoryDataManager:
         self._ensure_data_dir()
         self.df = pd.DataFrame(columns=['timestamp', 'operation', 'num1', 'num2', 'result'])
         logger.info(f"Initialized HistoryDataManager with data file: {self.data_file}")
+        
+        # If file exists, load its contents
+        if os.path.exists(self.data_file) and os.path.getsize(self.data_file) > 0:
+            self.load_history()
     
     def _ensure_data_dir(self):
         """Ensure the directory for the data file exists."""
@@ -91,14 +95,14 @@ class HistoryDataManager:
     
     def load_history(self, filename=None):
         """Load history from a CSV file (default: self.data_file)."""
-        import pandas as pd
         fname = filename or self.data_file
         try:
-            self.df = pd.read_csv(fname, parse_dates=['timestamp'])
+            if os.path.exists(fname) and os.path.getsize(fname) > 0:
+                self.df = pd.read_csv(fname, parse_dates=['timestamp'])
         except Exception as e:
             logger.warning(f"Failed to load history from {fname}: {e}")
             self.df = pd.DataFrame(columns=['timestamp', 'operation', 'num1', 'num2', 'result'])
-
+    
     def filter_history(self, **kwargs):
         """Filter history DataFrame by any field (operation, num1, num2, result, etc)."""
         df = self.df
@@ -106,16 +110,15 @@ class HistoryDataManager:
             if key in df.columns:
                 df = df[df[key] == value]
         return df
-
+    
     def to_dict(self):
         """Return history as a list of dicts."""
         return self.df.to_dict(orient='records')
-
+    
     def from_dict(self, dict_list):
         """Load history from a list of dicts."""
-        import pandas as pd
         self.df = pd.DataFrame(dict_list)
-
+    
     def clear_history(self) -> None:
         """Clear the calculation history."""
         self.df = pd.DataFrame(columns=['timestamp', 'operation', 'num1', 'num2', 'result'])
@@ -197,6 +200,21 @@ class HistoryDataManager:
             )
             for _, row in self.df.iterrows()
         ]
+    
+    def remove_last_calculation(self):
+        """Remove the last calculation from history for undo operations."""
+        if not self.df.empty:
+            # Remove the last row
+            self.df = self.df.iloc[:-1]
+            self._save_to_csv()
+            logger.info("Removed last calculation from history (undo operation)")
+            return True
+        return False
+    
+    def add_calculation(self, calculation):
+        """Add a specific calculation to history (used for redo operations)."""
+        self.save_calculation(calculation)
+        logger.info(f"Added calculation to history (redo operation): {calculation}")
     
     def _save_to_csv(self) -> None:
         """Save the current dataframe to CSV file."""
